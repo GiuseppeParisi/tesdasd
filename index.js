@@ -14,7 +14,12 @@ app.use(bodyParser.json());
 const jwt = require("jsonwebtoken");
 
 const uri = process.env.MONGODB_URL;
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  ssl: true, // Abilita SSL
+  sslValidate: false // Disabilita la validazione SSL
+});
 const connection = mongoose.connection;
 connection.once("open", () => {
   console.log("Connected to MongoDB");
@@ -220,7 +225,7 @@ app.put("/posts/:postId/:userId/like", async (req, res) => {
 
     res.json(updatedPost);
   } catch (error
-) {
+  ) {
     console.error("Error liking post:", error);
     res
       .status(500)
