@@ -48,7 +48,7 @@ app.post("/register", async (req, res) => {
     const { name, email, password } = req.body;
 
     // Verifica se l'utente esiste già
-    const existingUser = await User.findOne({ email }).maxTimeMS(10000);
+    const existingUser = await User.findOne({ email }).maxTimeMS(100000);
     if (existingUser) {
       return res.status(400).json({ message: "Email already registered" });
     }
