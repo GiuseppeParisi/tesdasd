@@ -3,19 +3,17 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const crypto = require("crypto");
 const nodemailer = require("nodemailer");
+const { MongoClient } = require('mongodb');
 
 const app = express();
-const port = 3000;
 const cors = require("cors");
 app.use(cors());
 dotenv.config();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 const jwt = require("jsonwebtoken");
-const { MongoClient } = require('mongodb');
 
 const uri = process.env.MONGODB_URL;
-
 const client = new MongoClient(uri);
 
 async function run() {
@@ -25,7 +23,7 @@ async function run() {
   } catch (err) {
     console.log("Error Connecting to MongoDB", err);
   } finally {
-    await client.close();
+    // Non chiudere il client qui, lascialo aperto per l'uso continuativo
   }
 }
 run().catch(console.dir);
@@ -33,6 +31,13 @@ run().catch(console.dir);
 const User = require("./models/user");
 const Post = require("./models/post");
 
+// Utilizza la porta fornita da Heroku, o la porta 3000 in locale
+const PORT = process.env.PORT || 3000;
+
+// Aggiorna la gestione del server per utilizzare la porta corretta
+app.listen(PORT, () => {
+  console.log(`Server listening on port ${PORT}`);
+});
 
 //endpoint to register a user in the backend
 app.post("/register", async (req, res) => {
